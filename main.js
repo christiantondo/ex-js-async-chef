@@ -14,6 +14,32 @@
 // - Restituire una Promise con la data di nascita dello chef.
 // - Gestire gli errori con try/catch.
 
+async function fetchJson(url) {
+    const response = await fetch(url);
+    const obj = await response.json();
+    return obj;
+}
+
+async function getChefBirthday(id) {
+    try {
+        const recipe = await fetchJson(`https://dummyjson.com/recipes/${id}`);
+        const user = await fetchJson(`https://dummyjson.com/users/${recipe.userId}`)
+
+        console.log(`The chef id of this recipe is ${recipe.userId}`)
+
+        return user.birthDate;
+
+    } catch (error) {
+        console.error('Error', error);
+        throw error;
+    }
+}
+
+(async () => {
+    const chefBirthday = await getChefBirthday(1);
+    console.log('The birthday of the chef is', chefBirthday);
+})();
+
 // Bonus 1:
 // Attualmente, se la prima richiesta non trova una ricetta, la seconda richiesta potrebbe comunque essere eseguita causando errori a cascata.
 // Modifica getChefBirthday(id) per intercettare eventuali errori prima di fare la seconda richiesta.
